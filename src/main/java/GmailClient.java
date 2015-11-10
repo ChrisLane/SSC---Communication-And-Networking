@@ -1,5 +1,3 @@
-import com.sun.mail.imap.IMAPFolder;
-
 import javax.mail.*;
 import java.io.IOException;
 import java.util.Properties;
@@ -36,7 +34,7 @@ public class GmailClient {
     public void showMail() {
         try {
             // Step 3: Choose a folder, in this case, we chose inbox
-            folder = (IMAPFolder) store.getFolder("inbox");
+            folder = store.getFolder("inbox");
 
             // Step 4: Open the folder
             if (!folder.isOpen())
