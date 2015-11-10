@@ -3,11 +3,13 @@ import java.util.Scanner;
 
 public class ClientView {
     private Scanner in = new Scanner(System.in);
-    private Credentials login = new Credentials();
-    private GmailClient gmail = new GmailClient(login);
+    private static Credentials login = new Credentials();
+    private static GmailClient gmail;
 
     public static void main(String[] args) {
         ClientView clientView = new ClientView();
+        clientView.collectCredentials();
+        gmail = new GmailClient(login);
 
         clientView.optionSelect();
     }
@@ -39,6 +41,11 @@ public class ClientView {
         System.out.println(i + " - Show Emails");
         i++;
         System.out.println(i + " - Exit");
+    }
+
+    private void collectCredentials() {
+        collectUsername();
+        collectPassword();
     }
 
     private void collectUsername() {
