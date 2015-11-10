@@ -1,14 +1,6 @@
 import com.sun.mail.imap.IMAPFolder;
 
-import javax.mail.BodyPart;
-import javax.mail.Flags;
-import javax.mail.Folder;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.NoSuchProviderException;
-import javax.mail.Session;
-import javax.mail.Store;
+import javax.mail.*;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -103,8 +95,7 @@ public class GmailClient {
                 if (store != null) {
                     store.close();
                 }
-            }
-            catch (MessagingException e) {
+            } catch (MessagingException e) {
                 System.err.println("Could not close the folder or store");
             }
         }

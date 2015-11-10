@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.util.Scanner;
 
 public class ClientView {
@@ -38,5 +39,29 @@ public class ClientView {
         System.out.println(i + " - Show Emails");
         i++;
         System.out.println(i + " - Exit");
+    }
+
+    private void collectUsername() {
+        // Username input using JPasswordField
+        JTextField username = new JTextField(20);
+        int action = JOptionPane.showConfirmDialog(null, username, "Enter username", JOptionPane.OK_CANCEL_OPTION);
+        if (action < 0) {
+            JOptionPane.showMessageDialog(null, "Cancel, X or escape key selected");
+            System.exit(0);
+        } else {
+            login.setUsername(username.getText());
+        }
+    }
+
+    private void collectPassword() {
+        // User password input using JPasswordField
+        JPasswordField password = new JPasswordField(10);
+        int action = JOptionPane.showConfirmDialog(null, password, "Enter Password", JOptionPane.OK_CANCEL_OPTION);
+        if (action < 0) {
+            JOptionPane.showMessageDialog(null, "Cancel, X or escape key selected");
+            System.exit(0);
+        } else {
+            login.setPassword(new String(password.getPassword()));
+        }
     }
 }
