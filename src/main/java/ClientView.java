@@ -45,7 +45,7 @@ public class ClientView {
         System.out.println(i + " - Exit");
     }
 
-    public void printMail(Message[] messages) {
+    private void printMail(Message[] messages) {
         try {
             int count = 0;
 
