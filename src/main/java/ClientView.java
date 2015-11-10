@@ -1,4 +1,6 @@
+import javax.mail.*;
 import javax.swing.*;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class ClientView {
@@ -14,7 +16,7 @@ public class ClientView {
         clientView.optionSelect();
     }
 
-    public void optionSelect() {
+    private void optionSelect() {
         int numberOfOptions = 2;
         boolean exit = false;
 
@@ -28,7 +30,7 @@ public class ClientView {
             }
             switch (option) {
                 case 1:
-                    gmail.showMail();
+                    printMail(gmail.getMail(gmail.getFolders()[0]));
                     break;
                 case 2:
                     exit = true;
@@ -41,6 +43,46 @@ public class ClientView {
         System.out.println(i + " - Show Emails");
         i++;
         System.out.println(i + " - Exit");
+    }
+
+    public void printMail(Message[] messages) {
+        try {
+            int count = 0;
+
+            // Get all messages
+            for (Message message : messages) {
+                count++;
+
+                // Get subject of each message
+                System.out.println("The " + count + "th message is: " + message.getSubject());
+                //System.out.println(message.getContentType());
+                try {
+                    if (message.getContentType().contains("TEXT/PLAIN")) {
+                        System.out.println(message.getContent());
+                    } else {
+                        // How to get parts from multiple body parts of MIME message
+                        Multipart multipart = (Multipart) message.getContent();
+                        System.out.println("-----------" + multipart.getCount() + "----------------");
+                        for (int x = 0; x < multipart.getCount(); x++) {
+                            BodyPart bodyPart = multipart.getBodyPart(x);
+                            // If the part is a plan text message, then print it out.
+                            if (bodyPart.getContentType().contains("TEXT/PLAIN")) {
+                                System.out.println(bodyPart.getContentType());
+                                System.out.println(bodyPart.getContent().toString());
+                            }
+
+                        }
+                    }
+                } catch (IOException e) {
+                    System.err.println("Issue with IO!");
+                }
+
+                Flags mes_flag = message.getFlags();
+                System.out.println("Has this message been read?  " + mes_flag.contains(Flags.Flag.SEEN));
+            }
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
     }
 
     private void collectCredentials() {
