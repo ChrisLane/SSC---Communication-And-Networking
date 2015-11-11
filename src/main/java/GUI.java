@@ -25,7 +25,7 @@ public class GUI {
     private JSplitPane splitPane;
     private JButton sendEmailButton;
 
-    public GUI() {
+    private GUI() {
         loginButton.addActionListener(e -> {
             Credentials credentials = new Credentials();
             credentials.setUsername(usernameTextField.getText());
