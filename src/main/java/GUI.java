@@ -32,7 +32,7 @@ public class GUI {
             credentials.setPassword(passwordPasswordField.getPassword());
 
             gmail = new GmailClient(credentials);
-            view = new ClientView(gmail);
+            view = new ClientView();
 
         });
 

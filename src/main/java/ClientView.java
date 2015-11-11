@@ -3,12 +3,7 @@ import javax.swing.*;
 import java.io.IOException;
 
 public class ClientView {
-    private GmailClient gmail;
     private DefaultListModel<String> messageModel;
-
-    public ClientView(GmailClient gmail) {
-        this.gmail = gmail;
-    }
 
     public void printSubjects(Message[] messages, JList<String> jList) {
         DefaultListModel<String> subjectModel = new DefaultListModel<>();
