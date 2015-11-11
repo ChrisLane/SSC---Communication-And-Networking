@@ -3,8 +3,6 @@ import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class GUI {
     private GmailClient gmail;
@@ -83,26 +81,18 @@ public class GUI {
             }
         });
 
-        sendEmailButton.addActionListener(new ActionListener() {
-            /**
-             * Invoked when an action occurs.
-             *
-             * @param e
-             */
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String to = emailTo.getText();
-                String cc = emailCC.getText();
-                String subject = emailSubject.getText();
-                String message = emailBody.getText();
+        sendEmailButton.addActionListener(e -> {
+            String to = emailTo.getText();
+            String cc = emailCC.getText();
+            String subject = emailSubject.getText();
+            String message = emailBody.getText();
 
-                gmail.sendMessage(to, cc, subject, message);
+            gmail.sendMessage(to, cc, subject, message);
 
-                emailTo.setText("");
-                emailCC.setText("");
-                emailSubject.setText("");
-                emailBody.setText("");
-            }
+            emailTo.setText("");
+            emailCC.setText("");
+            emailSubject.setText("");
+            emailBody.setText("");
         });
     }
 
