@@ -1,62 +1,13 @@
 import javax.mail.*;
 import javax.swing.*;
 import java.io.IOException;
-import java.util.Scanner;
 
 public class ClientView {
-    private Scanner in = new Scanner(System.in);
     private GmailClient gmail;
     private DefaultListModel<String> messageModel;
 
     public ClientView(GmailClient gmail) {
         this.gmail = gmail;
-    }
-
-    private void optionSelect() {
-        int numberOfOptions = 2;
-        boolean exit = false;
-
-        while (!exit) {
-            System.out.println("Please enter one of the following options:");
-            printMenuOptions();
-
-            int option;
-            while ((option = in.nextInt()) > numberOfOptions) {
-                System.out.println("Your selection must be between 1 and " + numberOfOptions);
-            }
-            switch (option) {
-                case 1:
-                    Folder[] folders = gmail.getFolders();
-                    System.out.println("Please enter one of the following folder numbers");
-                    printFolderOptions(folders);
-
-                    int selection;
-                    while ((selection = in.nextInt()) > folders.length) {
-                        System.out.println("Please choose an option below " + folders.length);
-                    }
-                    printMail(gmail.getMail(folders[selection]));
-                    break;
-                case 2:
-                    exit = true;
-            }
-        }
-    }
-
-    private void printMenuOptions() {
-        int i = 1;
-        System.out.println(i + " - Show Emails");
-        i++;
-        System.out.println(i + " - Exit");
-    }
-
-    private void printFolderOptions(Folder[] folders) {
-        int count = 0;
-        for (Folder folder : folders) {
-            System.out.print(count + ". ");
-            System.out.print(folder.getFullName());
-            System.out.println();
-            count++;
-        }
     }
 
     public void printSubjects(Message[] messages, JList<String> jList) {
@@ -98,45 +49,5 @@ public class ClientView {
         }
 
         jList.setModel(messageModel);
-    }
-
-    private void printMail(Message[] messages) {
-        try {
-            int count = 0;
-
-            // Get all messages
-            for (Message message : messages) {
-                count++;
-
-                // Get subject of each message
-                System.out.println("The " + count + "th message is: " + message.getSubject());
-                //System.out.println(message.getContentType());
-                try {
-                    if (message.getContentType().contains("TEXT/PLAIN")) {
-                        System.out.println(message.getContent());
-                    } else {
-                        // How to get parts from multiple body parts of MIME message
-                        Multipart multipart = (Multipart) message.getContent();
-                        System.out.println("-----------" + multipart.getCount() + "----------------");
-                        for (int x = 0; x < multipart.getCount(); x++) {
-                            BodyPart bodyPart = multipart.getBodyPart(x);
-                            // If the part is a plan text message, then print it out.
-                            if (bodyPart.getContentType().contains("TEXT/PLAIN")) {
-                                System.out.println(bodyPart.getContentType());
-                                System.out.println(bodyPart.getContent().toString());
-                            }
-
-                        }
-                    }
-                } catch (IOException e) {
-                    System.err.println("Issue with IO!");
-                }
-
-                Flags mes_flag = message.getFlags();
-                System.out.println("Has this message been read?  " + mes_flag.contains(Flags.Flag.SEEN));
-            }
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
     }
 }
