@@ -13,11 +13,24 @@ public class ClientView {
         try {
             for (Message message : messages) {
                 String subject = message.getSubject();
+                String subjectWithFlags = subject + " - ";
                 if (message.isSet(Flags.Flag.SEEN)) {
-                    subjectModel.addElement(subject + " - READ");
-                } else {
-                    subjectModel.addElement(subject);
+                    subjectWithFlags += "READ";
                 }
+                if (message.isSet(Flags.Flag.ANSWERED)) {
+                    subjectWithFlags += " ANSWERED";
+                }
+                if (message.isSet(Flags.Flag.RECENT)) {
+                    subjectWithFlags += " RECENT";
+                }
+
+                String[] userFlags = message.getFlags().getUserFlags();
+                for (String flag : userFlags) {
+                    subjectWithFlags += " " + flag;
+                }
+
+                subjectModel.addElement(subjectWithFlags);
+                jList.setModel(subjectModel);
             }
         } catch (MessagingException e) {
             e.printStackTrace();
