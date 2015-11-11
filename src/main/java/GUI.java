@@ -35,8 +35,8 @@ public class GUI {
     private JButton attachFileButton;
     private JTextField searchTextField;
     private JButton runSearchButton;
-    private JTextField flagCriteriaTextField;
     private JButton flagAsSpamButton;
+    private JTextField criteriaTextField;
 
     private GUI() {
         loginButton.addActionListener(e -> {
@@ -161,7 +161,41 @@ public class GUI {
         });
 
         flagAsSpamButton.addActionListener(e -> {
+            Flags spamFlag = new Flags("spam");
 
+            Message[] messages = gmail.getMail(folder);
+            String searchTerm = criteriaTextField.getText();
+
+            SearchTerm search = new SearchTerm() {
+                @Override
+                public boolean match(Message message) {
+                    try {
+                        Enumeration headers = message.getAllHeaders();
+                        while (headers.hasMoreElements()) {
+                            Header header = (Header) headers.nextElement();
+                            if (header.getValue().contains(searchTerm)) {
+                                return true;
+                            }
+                        }
+                        if (message.getContent().toString().contains(searchTerm)) {
+                            return true;
+                        }
+                    } catch (MessagingException | IOException e1) {
+                        e1.printStackTrace();
+                    }
+                    return false;
+                }
+            };
+
+            for (Message message : messages) {
+                try {
+                    if (message.match(search)) {
+                        message.setFlags(spamFlag, true);
+                    }
+                } catch (MessagingException e1) {
+                    e1.printStackTrace();
+                }
+            }
         });
     }
 
