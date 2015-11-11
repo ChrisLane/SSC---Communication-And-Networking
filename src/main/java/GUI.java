@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 
 public class GUI {
     private GmailClient gmail;
@@ -125,7 +126,14 @@ public class GUI {
                 @Override
                 public boolean match(Message message) {
                     try {
-                        if (message.getSubject().contains(searchTerm) || message.getContent().toString().contains(searchTerm)) {
+                        Enumeration headers = message.getAllHeaders();
+                        while (headers.hasMoreElements()) {
+                            Header header = (Header) headers.nextElement();
+                            if (header.getValue().contains(searchTerm)) {
+                                return true;
+                            }
+                        }
+                        if (message.getContent().toString().contains(searchTerm)) {
                             return true;
                         }
                     } catch (MessagingException | IOException e1) {
