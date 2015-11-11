@@ -1,8 +1,8 @@
 public class Credentials {
     private String username;
-    private String password;
+    private char[] password;
 
-    public void setCredentials(String username, String password) {
+    public void setCredentials(String username, char[] password) {
         setUsername(username);
         setPassword(password);
     }
@@ -16,10 +16,10 @@ public class Credentials {
     }
 
     public String getPassword() {
-        return password;
+        return new String(password);
     }
 
-    public void setPassword(String password) {
+    public void setPassword(char[] password) {
         this.password = password;
     }
 }
