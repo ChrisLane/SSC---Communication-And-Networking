@@ -1,15 +1,29 @@
 import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
 public class GmailClient {
-    Store store = null;
+    private Store store = null;
+    private Session session;
+    private String smtpHost;
+    private String username;
+    private String password;
 
     public GmailClient(Credentials login) {
-        String username = login.getUsername();
-        String host = "imap.gmail.com";
+        username = login.getUsername();
+        password = login.getPassword();
+        String imapHost = "imap.gmail.com";
+        smtpHost = "smtp.gmail.com";
         Properties props = new Properties();
         props.setProperty("mail.imap.ssl.enable", "true");
-        Session session = Session.getInstance(props);
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", smtpHost);
+        props.put("mail.smtp.port", "587");
+        props.setProperty("mail.user", username);
+        props.setProperty("mail.password", password);
+        session = Session.getInstance(props);
 
         try {
             store = session.getStore("imap");
@@ -20,7 +34,7 @@ public class GmailClient {
 
         try {
             if (!username.isEmpty()) {
-                store.connect(host, username, login.getPassword());
+                store.connect(imapHost, username, password);
             } else {
                 System.err.println("No username provided");
             }
@@ -52,5 +66,25 @@ public class GmailClient {
             e.printStackTrace();
         }
         return folders;
+    }
+
+    public void sendMessage(String to, String cc, String subject, String message) {
+        MimeMessage mimeMessage = new MimeMessage(session);
+        try {
+            mimeMessage.setFrom(new InternetAddress(username));
+            mimeMessage.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+            mimeMessage.setRecipients(Message.RecipientType.CC, InternetAddress.parse(cc));
+            mimeMessage.setSubject(subject);
+            mimeMessage.setText(message);
+
+            mimeMessage.saveChanges();
+
+            // Step 4: Send the message by javax.mail.Transport .
+            Transport tr = session.getTransport("smtp");    // Get Transport object from session
+            tr.connect(smtpHost, username, password); // We need to connect
+            tr.sendMessage(mimeMessage, mimeMessage.getAllRecipients()); // Send message
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
     }
 }

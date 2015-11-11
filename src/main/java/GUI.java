@@ -15,12 +15,19 @@ public class GUI {
     private Folder folder;
 
     private JButton loginButton;
-    private JPanel panel1;
+    private JPanel viewMail;
     private JList<Folder> folderJList;
     private JTextField usernameTextField;
     private JPasswordField passwordPasswordField;
     private JButton mailboxesButton;
     private JList messageJList;
+    private JPanel sendMail;
+    private JTextField emailTo;
+    private JTextField emailCC;
+    private JTextField emailSubject;
+    private JTextArea emailBody;
+    private JSplitPane splitPane;
+    private JButton sendEmailButton;
 
     public GUI() {
         loginButton.addActionListener(new ActionListener() {
@@ -96,7 +103,9 @@ public class GUI {
                     Message[] messages = gmail.getMail(folder);
                     for (Message message : messages) {
                         try {
-                            if (messageJList.getSelectedValue().equals(message.getSubject())) {
+                            if (messageJList.getSelectedValue().equals(message.getSubject() + " - Seen: " + true) ||
+                                messageJList.getSelectedValue().equals(message.getSubject() + " - Seen: " + false)) {
+
                                 view.printMessage(message, messageJList);
                                 message.setFlag(Flags.Flag.SEEN, true);
                             }
@@ -107,11 +116,33 @@ public class GUI {
                 }
             }
         });
+
+        sendEmailButton.addActionListener(new ActionListener() {
+            /**
+             * Invoked when an action occurs.
+             *
+             * @param e
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String to = emailTo.getText();
+                String cc = emailCC.getText();
+                String subject = emailSubject.getText();
+                String message = emailBody.getText();
+
+                gmail.sendMessage(to, cc, subject, message);
+
+                emailTo.setText("");
+                emailCC.setText("");
+                emailSubject.setText("");
+                emailBody.setText("");
+            }
+        });
     }
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("GUI");
-        frame.setContentPane(new GUI().panel1);
+        frame.setContentPane(new GUI().splitPane);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
