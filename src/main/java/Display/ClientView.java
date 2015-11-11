@@ -18,15 +18,15 @@ public class ClientView {
                     subjectWithFlags += "READ";
                 }
                 if (message.isSet(Flags.Flag.ANSWERED)) {
-                    subjectWithFlags += " ANSWERED";
+                    subjectWithFlags += ", ANSWERED";
                 }
                 if (message.isSet(Flags.Flag.RECENT)) {
-                    subjectWithFlags += " RECENT";
+                    subjectWithFlags += ", RECENT";
                 }
 
                 String[] userFlags = message.getFlags().getUserFlags();
                 for (String flag : userFlags) {
-                    subjectWithFlags += " " + flag;
+                    subjectWithFlags += ", " + flag;
                 }
 
                 subjectModel.addElement(subjectWithFlags);
