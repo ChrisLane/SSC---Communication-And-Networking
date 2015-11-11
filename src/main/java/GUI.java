@@ -35,6 +35,8 @@ public class GUI {
     private JButton attachFileButton;
     private JTextField searchTextField;
     private JButton runSearchButton;
+    private JTextField flagCriteriaTextField;
+    private JButton flagAsSpamButton;
 
     private GUI() {
         loginButton.addActionListener(e -> {
@@ -45,7 +47,6 @@ public class GUI {
 
             gmail = new GmailClient(credentials);
             view = new ClientView();
-
         });
 
         mailboxesButton.addActionListener(e -> {
@@ -157,6 +158,10 @@ public class GUI {
             matchStore.toArray(matchedMessages);
 
             view.printSubjects(matchedMessages, messageJList);
+        });
+
+        flagAsSpamButton.addActionListener(e -> {
+
         });
     }
 
