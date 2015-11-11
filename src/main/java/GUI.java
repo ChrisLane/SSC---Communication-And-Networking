@@ -1,56 +1,119 @@
-import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
+import javax.mail.Flags;
+import javax.mail.Folder;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class GUI extends Application implements EventHandler<ActionEvent> {
+public class GUI {
+    private GmailClient gmail;
+    private ClientView view;
 
-    Button button;
+    private Folder folder;
+
+    private JButton loginButton;
+    private JPanel panel1;
+    private JList<Folder> folderJList;
+    private JTextField usernameTextField;
+    private JPasswordField passwordPasswordField;
+    private JButton mailboxesButton;
+    private JList messageJList;
+
+    public GUI() {
+        loginButton.addActionListener(new ActionListener() {
+            /**
+             * Invoked when an action occurs.
+             *
+             * @param e
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Credentials credentials = new Credentials();
+                credentials.setUsername(usernameTextField.getText());
+                credentials.setPassword(passwordPasswordField.getPassword());
+
+                gmail = new GmailClient(credentials);
+                view = new ClientView(gmail);
+
+            }
+        });
+
+        mailboxesButton.addActionListener(new ActionListener() {
+            /**
+             * Invoked when an action occurs.
+             *
+             * @param e
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Folder[] folders = gmail.getFolders();
+                DefaultListModel<Folder> folderModel = new DefaultListModel<>();
+
+                for (Folder folder : folders) {
+                    try {
+                        if (folder.list().length < 1) {
+                            folderModel.addElement(folder);
+                        } else {
+                            for (Folder innerFolder : folder.list()) {
+                                folderModel.addElement(innerFolder);
+                            }
+                        }
+                    } catch (MessagingException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+                folderJList.setModel(folderModel);
+            }
+        });
+        folderJList.addListSelectionListener(new ListSelectionListener() {
+            /**
+             * Called whenever the value of the selection changes.
+             *
+             * @param e the event that characterizes the change.
+             */
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    folder = folderJList.getSelectedValue();
+                    Message[] messages = gmail.getMail(folder);
+                    view.printSubjects(messages, messageJList);
+                }
+            }
+        });
+
+        messageJList.addListSelectionListener(new ListSelectionListener() {
+            /**
+             * Called whenever the value of the selection changes.
+             *
+             * @param e the event that characterizes the change.
+             */
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting() && !messageJList.getModel().equals(view.getMessageModel())) {
+                    Message[] messages = gmail.getMail(folder);
+                    for (Message message : messages) {
+                        try {
+                            if (messageJList.getSelectedValue().equals(message.getSubject())) {
+                                view.printMessage(message, messageJList);
+                                message.setFlag(Flags.Flag.SEEN, true);
+                            }
+                        } catch (MessagingException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                }
+            }
+        });
+    }
 
     public static void main(String[] args) {
-        launch(args);
-    }
-
-    /**
-     * The main entry point for all JavaFX applications.
-     * The start method is called after the init method has returned,
-     * and after the system is ready for the application to begin running.
-     * <p>
-     * <p>
-     * NOTE: This method is called on the JavaFX Application Thread.
-     * </p>
-     *
-     * @param primaryStage the primary stage for this application, onto which
-     *                     the application scene can be set. The primary stage will be embedded in
-     *                     the browser if the application was launched as an applet.
-     *                     Applications may create other stages, if needed, but they will not be
-     *                     primary stages and will not be embedded in the browser.
-     */
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        primaryStage.setTitle("Title of the window");
-        button = new Button("This is a button");
-
-        button.setOnAction(this);
-
-        StackPane layout = new StackPane();
-        layout.getChildren().add(button);
-
-        Scene scene = new Scene(layout, 300, 250);
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
-
-    /**
-     * Invoked when a specific event of the type for which this handler is
-     * registered happens.
-     *
-     * @param event the event which occurred
-     */
-    public void handle(ActionEvent event) {
-        System.out.println("Do something");
+        JFrame frame = new JFrame("GUI");
+        frame.setContentPane(new GUI().panel1);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
     }
 }
