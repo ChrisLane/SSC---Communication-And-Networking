@@ -27,9 +27,10 @@ public class GUI {
 
     private GUI() {
         loginButton.addActionListener(e -> {
+            String username = usernameTextField.getText();
+            char[] password = passwordPasswordField.getPassword();
             Credentials credentials = new Credentials();
-            credentials.setUsername(usernameTextField.getText());
-            credentials.setPassword(passwordPasswordField.getPassword());
+            credentials.setCredentials(username, password);
 
             gmail = new GmailClient(credentials);
             view = new ClientView();
