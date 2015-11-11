@@ -5,17 +5,8 @@ import java.util.Scanner;
 
 public class ClientView {
     private Scanner in = new Scanner(System.in);
-    //private static Credentials login = new Credentials();
     private GmailClient gmail;
     private DefaultListModel<String> messageModel;
-
-    /*public static void main(String[] args) {
-        ClientView clientView = new ClientView();
-        clientView.collectCredentials();
-        gmail = new GmailClient(login);
-
-        clientView.optionSelect();
-    }*/
 
     public ClientView(GmailClient gmail) {
         this.gmail = gmail;
@@ -148,33 +139,4 @@ public class ClientView {
             e.printStackTrace();
         }
     }
-
-/*    private void collectCredentials() {
-        collectUsername();
-        collectPassword();
-    }
-
-    private void collectUsername() {
-        // Username input using JPasswordField
-        JTextField username = new JTextField(20);
-        int action = JOptionPane.showConfirmDialog(null, username, "Enter username", JOptionPane.OK_CANCEL_OPTION);
-        if (action < 0) {
-            JOptionPane.showMessageDialog(null, "Cancel, X or escape key selected");
-            System.exit(0);
-        } else {
-            login.setUsername(username.getText());
-        }
-    }
-
-    private void collectPassword() {
-        // User password input using JPasswordField
-        JPasswordField password = new JPasswordField(10);
-        int action = JOptionPane.showConfirmDialog(null, password, "Enter Password", JOptionPane.OK_CANCEL_OPTION);
-        if (action < 0) {
-            JOptionPane.showMessageDialog(null, "Cancel, X or escape key selected");
-            System.exit(0);
-        } else {
-            login.setPassword(password.getPassword());
-        }
-    }*/
 }
