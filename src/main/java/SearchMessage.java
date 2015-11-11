@@ -8,10 +8,19 @@ import java.util.Enumeration;
 public class SearchMessage extends SearchTerm {
     private String searchTerm;
 
+    /**
+     * Create a new SearchMessage object
+     * @param searchTerm The string to search a message for
+     */
     public SearchMessage(String searchTerm) {
         this.searchTerm = searchTerm;
     }
 
+    /**
+     * Search a message for a given string
+     * @param message Message to be searched
+     * @return If a message contains the string being searched for
+     */
     @Override
     public boolean match(Message message) {
         try {

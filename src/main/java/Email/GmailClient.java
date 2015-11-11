@@ -16,6 +16,10 @@ public class GmailClient {
     private String username;
     private String password;
 
+    /**
+     * Create a new GmailClient object with a given login
+     * @param login Credentials to be used to sign in to the GMail account
+     */
     public GmailClient(Credentials login) {
         username = login.getUsername();
         password = login.getPassword();
@@ -50,6 +54,11 @@ public class GmailClient {
         }
     }
 
+    /**
+     * Returns the messages from a given mail folder
+     * @param folder Folder to retrieve the messages from
+     * @return All messages contained in the given folder
+     */
     public Message[] getMail(Folder folder) {
         Message[] messages = null;
         // Step 4: Open the folder
@@ -64,6 +73,10 @@ public class GmailClient {
         return messages;
     }
 
+    /**
+     * Returns all folders of the account
+     * @return All folders of the account
+     */
     public Folder[] getFolders() {
         Folder[] folders = null;
         try {
@@ -74,6 +87,14 @@ public class GmailClient {
         return folders;
     }
 
+    /**
+     * Send an email
+     * @param to Email address to send to
+     * @param cc Email address to send carbon copy to
+     * @param subject Subject of email
+     * @param message Content of email
+     * @param attachment File attachment for email
+     */
     public void sendMessage(String to, String cc, String subject, String message, File attachment) {
         MimeMessage mimeMessage = new MimeMessage(session);
         try {
@@ -100,9 +121,7 @@ public class GmailClient {
             Transport tr = session.getTransport("smtp");    // Get Transport object from session
             tr.connect(smtpHost, username, password); // We need to connect
             tr.sendMessage(mimeMessage, mimeMessage.getAllRecipients()); // Send message
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (MessagingException | IOException e) {
             e.printStackTrace();
         }
     }

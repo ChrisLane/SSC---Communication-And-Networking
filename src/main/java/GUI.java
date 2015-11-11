@@ -42,6 +42,9 @@ public class GUI {
     private JTextField flagTextField;
 
     private GUI() {
+        /**
+         * When the login button is pressed, the username and password inputs will be taken to log into the account.
+         */
         loginButton.addActionListener(e -> {
             String username = usernameTextField.getText();
             char[] password = passwordPasswordField.getPassword();
@@ -52,6 +55,9 @@ public class GUI {
             view = new ClientView();
         });
 
+        /**
+         * When the "Load Mailboxes" button is pressed, all folders will be placed in the folders section.
+         */
         mailboxesButton.addActionListener(e -> {
             Folder[] folders = gmail.getFolders();
             DefaultListModel<Folder> folderModel = new DefaultListModel<>();
@@ -72,6 +78,9 @@ public class GUI {
             folderJList.setModel(folderModel);
         });
 
+        /**
+         * When a folder is clicked, the folder's message subjects will be loaded into the messages section.
+         */
         folderJList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 folder = folderJList.getSelectedValue();
@@ -80,6 +89,9 @@ public class GUI {
             }
         });
 
+        /**
+         * When a subject is clicked, the messages section will be replaced with the message belonging to said subject.
+         */
         messageJList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting() && !messageJList.getModel().equals(view.getMessageModel())) {
                 Message[] messages = gmail.getMail(folder);
@@ -101,6 +113,9 @@ public class GUI {
             }
         });
 
+        /**
+         * When the "Send Email" button is pressed, data will be taken from inputs, formed and sent as an email.
+         */
         sendEmailButton.addActionListener(e -> {
             String to = emailTo.getText();
             String cc = emailCC.getText();
@@ -116,6 +131,10 @@ public class GUI {
             attachment = null;
         });
 
+        /**
+         * When the "Attach File" button is pressed, a file selection window will be opened to allow setting a file
+         * to be attached to an email.
+         */
         attachFileButton.addActionListener(e -> {
             JFileChooser fileSelect = new JFileChooser();
             fileSelect.showOpenDialog(splitPane);
@@ -123,6 +142,10 @@ public class GUI {
             attachment = fileSelect.getSelectedFile();
         });
 
+        /**
+         * When the "Run Search" button is pressed, the program will check message headers and content for the given
+         * string.
+         */
         runSearchButton.addActionListener(e -> {
             Message[] messages = gmail.getMail(folder);
             String searchTerm = searchTextField.getText();
@@ -145,6 +168,10 @@ public class GUI {
             view.printSubjects(matchedMessages, messageJList);
         });
 
+        /**
+         * When the "Move to Spam" button is pressed, messages matching the given criteria will be moved to a spam
+         * folder and removed from the current folder.
+         */
         moveToSpamButton.addActionListener(e -> {
             Message[] messages = gmail.getMail(folder);
             String searchTerm = criteriaTextField.getText();
@@ -194,6 +221,10 @@ public class GUI {
             }
         });
 
+        /**
+         * When the "Apply flag" button is pressed, messages meeting the given criteria will have the given custom flag
+         * to them.
+         */
         applyFlagButton.addActionListener(e -> {
             Message[] messages = gmail.getMail(folder);
             String searchTerm = criteriaTextField.getText();
@@ -213,6 +244,10 @@ public class GUI {
         });
     }
 
+    /**
+     * Run the email client
+     * @param args
+     */
     public static void main(String[] args) {
         JFrame frame = new JFrame("GUI");
         frame.setContentPane(new GUI().splitPane);
