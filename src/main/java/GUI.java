@@ -2,13 +2,14 @@ import Display.ClientView;
 import Email.Credentials;
 import Email.GmailClient;
 
-import javax.mail.*;
+import javax.mail.Flags;
+import javax.mail.Folder;
+import javax.mail.Message;
+import javax.mail.MessagingException;
 import javax.mail.search.SearchTerm;
 import javax.swing.*;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 
 public class GUI {
     private GmailClient gmail;
@@ -35,8 +36,10 @@ public class GUI {
     private JButton attachFileButton;
     private JTextField searchTextField;
     private JButton runSearchButton;
-    private JButton flagAsSpamButton;
+    private JButton moveToSpamButton;
     private JTextField criteriaTextField;
+    private JButton applyFlagButton;
+    private JTextField flagTextField;
 
     private GUI() {
         loginButton.addActionListener(e -> {
@@ -68,6 +71,7 @@ public class GUI {
             }
             folderJList.setModel(folderModel);
         });
+
         folderJList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 folder = folderJList.getSelectedValue();
@@ -123,26 +127,7 @@ public class GUI {
             Message[] messages = gmail.getMail(folder);
             String searchTerm = searchTextField.getText();
 
-            SearchTerm search = new SearchTerm() {
-                @Override
-                public boolean match(Message message) {
-                    try {
-                        Enumeration headers = message.getAllHeaders();
-                        while (headers.hasMoreElements()) {
-                            Header header = (Header) headers.nextElement();
-                            if (header.getValue().contains(searchTerm)) {
-                                return true;
-                            }
-                        }
-                        if (message.getContent().toString().contains(searchTerm)) {
-                            return true;
-                        }
-                    } catch (MessagingException | IOException e1) {
-                        e1.printStackTrace();
-                    }
-                    return false;
-                }
-            };
+            SearchTerm search = new SearchMessage(searchTerm);
 
             ArrayList<Message> matchStore = new ArrayList<>();
             for (Message message : messages) {
@@ -160,37 +145,66 @@ public class GUI {
             view.printSubjects(matchedMessages, messageJList);
         });
 
-        flagAsSpamButton.addActionListener(e -> {
-            Flags spamFlag = new Flags("spam");
-
+        moveToSpamButton.addActionListener(e -> {
             Message[] messages = gmail.getMail(folder);
             String searchTerm = criteriaTextField.getText();
 
-            SearchTerm search = new SearchTerm() {
-                @Override
-                public boolean match(Message message) {
-                    try {
-                        Enumeration headers = message.getAllHeaders();
-                        while (headers.hasMoreElements()) {
-                            Header header = (Header) headers.nextElement();
-                            if (header.getValue().contains(searchTerm)) {
-                                return true;
-                            }
-                        }
-                        if (message.getContent().toString().contains(searchTerm)) {
-                            return true;
-                        }
-                    } catch (MessagingException | IOException e1) {
-                        e1.printStackTrace();
-                    }
-                    return false;
-                }
-            };
+            SearchTerm search = new SearchMessage(searchTerm);
 
+            ArrayList<Message> matchStore = new ArrayList<>();
             for (Message message : messages) {
                 try {
                     if (message.match(search)) {
-                        message.setFlags(spamFlag, true);
+                        matchStore.add(message);
+                        message.setFlag(Flags.Flag.DELETED, true);
+                    }
+                } catch (MessagingException e1) {
+                    e1.printStackTrace();
+                }
+            }
+            Message[] matchedMessages = new Message[matchStore.size()];
+            matchStore.toArray(matchedMessages);
+
+            Folder spamFolder = null;
+            for (Folder folder : gmail.getFolders()) {
+                try {
+                    if (folder.list().length < 1) {
+                        if (folder.getName().contains("Spam")) {
+                            spamFolder = folder;
+                        }
+                    } else {
+                        for (Folder innerFolder : folder.list()) {
+                            if (innerFolder.getName().contains("Spam")) {
+                                spamFolder = innerFolder;
+                            }
+                        }
+                    }
+                } catch (MessagingException e1) {
+                    e1.printStackTrace();
+                }
+
+            }
+
+            try {
+                if (!(spamFolder == null))
+                    folder.copyMessages(matchedMessages, spamFolder);
+                    folder.expunge();
+            } catch (MessagingException e1) {
+                e1.printStackTrace();
+            }
+        });
+
+        applyFlagButton.addActionListener(e -> {
+            Message[] messages = gmail.getMail(folder);
+            String searchTerm = criteriaTextField.getText();
+
+            SearchTerm search = new SearchMessage(searchTerm);
+
+            Flags flag = new Flags(flagTextField.getText());
+            for (Message message : messages) {
+                try {
+                    if (message.match(search)) {
+                        message.setFlags(flag, true);
                     }
                 } catch (MessagingException e1) {
                     e1.printStackTrace();
