@@ -22,7 +22,7 @@ public class ClientView {
 
         while (!exit) {
             System.out.println("Please enter one of the following options:");
-            printOptions();
+            printMenuOptions();
 
             int option;
             while ((option = in.nextInt()) > numberOfOptions) {
@@ -30,7 +30,15 @@ public class ClientView {
             }
             switch (option) {
                 case 1:
-                    printMail(gmail.getMail(gmail.getFolders()[0]));
+                    Folder[] folders = gmail.getFolders();
+                    System.out.println("Please enter one of the following folder numbers");
+                    printFolderOptions(folders);
+
+                    int selection;
+                    while ((selection = in.nextInt()) > folders.length) {
+                        System.out.println("Please choose an option below " + folders.length);
+                    }
+                    printMail(gmail.getMail(folders[selection]));
                     break;
                 case 2:
                     exit = true;
@@ -38,11 +46,32 @@ public class ClientView {
         }
     }
 
-    private void printOptions() {
+    private void printMenuOptions() {
         int i = 1;
         System.out.println(i + " - Show Emails");
         i++;
         System.out.println(i + " - Exit");
+    }
+
+    private void printFolderOptions(Folder[] folders) {
+        int count = 0;
+        for (Folder folder: folders) {
+            System.out.print(count + ". ");
+            System.out.print(folder.getFullName());
+            System.out.println();
+            count++;
+        }
+    }
+
+    private void printSubjects(Message[] messages) {
+        try {
+            for (Message message :
+                    messages) {
+                System.out.println(message.getSubject());
+            }
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
     }
 
     private void printMail(Message[] messages) {
@@ -110,7 +139,7 @@ public class ClientView {
             JOptionPane.showMessageDialog(null, "Cancel, X or escape key selected");
             System.exit(0);
         } else {
-            login.setPassword(new String(password.getPassword()));
+            login.setPassword(password.getPassword());
         }
     }
 }
