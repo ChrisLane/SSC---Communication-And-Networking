@@ -1,3 +1,5 @@
+package Email;
+
 public class Credentials {
     private String username;
     private char[] password;

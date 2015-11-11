@@ -1,6 +1,12 @@
+package Email;
+
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import java.io.File;
+import java.io.IOException;
 import java.util.Properties;
 
 public class GmailClient {
@@ -68,15 +74,26 @@ public class GmailClient {
         return folders;
     }
 
-    public void sendMessage(String to, String cc, String subject, String message) {
+    public void sendMessage(String to, String cc, String subject, String message, File attachment) {
         MimeMessage mimeMessage = new MimeMessage(session);
         try {
             mimeMessage.setFrom(new InternetAddress(username));
             mimeMessage.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
             mimeMessage.setRecipients(Message.RecipientType.CC, InternetAddress.parse(cc));
             mimeMessage.setSubject(subject);
-            mimeMessage.setText(message);
 
+            MimeBodyPart messageBodyPart = new MimeBodyPart();
+            messageBodyPart.setContent(message, "text/plain");
+            Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(messageBodyPart);
+
+            if (!(attachment == null)) {
+                MimeBodyPart attachmentPart = new MimeBodyPart();
+                attachmentPart.attachFile(attachment);
+                multipart.addBodyPart(attachmentPart);
+            }
+
+            mimeMessage.setContent(multipart);
             mimeMessage.saveChanges();
 
             // Step 4: Send the message by javax.mail.Transport .
@@ -84,6 +101,8 @@ public class GmailClient {
             tr.connect(smtpHost, username, password); // We need to connect
             tr.sendMessage(mimeMessage, mimeMessage.getAllRecipients()); // Send message
         } catch (MessagingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

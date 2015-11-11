@@ -1,3 +1,5 @@
+package Display;
+
 import javax.mail.*;
 import javax.swing.*;
 import java.io.IOException;
@@ -10,7 +12,12 @@ public class ClientView {
 
         try {
             for (Message message : messages) {
-                subjectModel.addElement(message.getSubject() + " - Seen: " + message.isSet(Flags.Flag.SEEN));
+                String subject = message.getSubject();
+                if (message.isSet(Flags.Flag.SEEN)) {
+                    subjectModel.addElement(subject + " - READ");
+                } else {
+                    subjectModel.addElement(subject);
+                }
             }
         } catch (MessagingException e) {
             e.printStackTrace();
@@ -30,8 +37,8 @@ public class ClientView {
                 messageModel.addElement(message.getContent().toString());
             } else {
                 Multipart multipart = (Multipart) message.getContent();
-                for (int x = 0; x < multipart.getCount(); x++) {
-                    BodyPart bodyPart = multipart.getBodyPart(x);
+                for (int i = 0; i < multipart.getCount(); i++) {
+                    BodyPart bodyPart = multipart.getBodyPart(i);
                     if (bodyPart.getContentType().contains("TEXT/PLAIN")) {
                         messageModel.addElement(bodyPart.getContent().toString());
                     }
