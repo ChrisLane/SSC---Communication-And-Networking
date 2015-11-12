@@ -9,8 +9,9 @@ public class ClientView {
 
     /**
      * Print subjects of messages to a given JList
+     *
      * @param messages Messages to retrieve subjects from
-     * @param jList JList to print subjects to
+     * @param jList    JList to print subjects to
      */
     public void printSubjects(Message[] messages, JList<String> jList) {
         DefaultListModel<String> subjectModel = new DefaultListModel<>();
@@ -46,6 +47,7 @@ public class ClientView {
 
     /**
      * Return the list model being used for the messages JList
+     *
      * @return The list model applied to the messages JList
      */
     public DefaultListModel<String> getMessageModel() {
@@ -54,8 +56,9 @@ public class ClientView {
 
     /**
      * Print a message to a given JList
+     *
      * @param message Message to be printed to the JList
-     * @param jList JList to print the message to
+     * @param jList   JList to print the message to
      */
     public void printMessage(Message message, JList<String> jList) {
         messageModel = new DefaultListModel<>();

@@ -6,6 +6,7 @@ public class Credentials {
 
     /**
      * Set the username and password for this object.
+     *
      * @param username String to be set as the username
      * @param password char[] to be set as the password
      */
@@ -16,6 +17,7 @@ public class Credentials {
 
     /**
      * Returns the username
+     *
      * @return Return the username
      */
     public String getUsername() {
@@ -24,6 +26,7 @@ public class Credentials {
 
     /**
      * Sets the username
+     *
      * @param username String to be set as the username
      */
     public void setUsername(String username) {
@@ -32,6 +35,7 @@ public class Credentials {
 
     /**
      * Returns the password
+     *
      * @return Return the password as a String
      */
     public String getPassword() {
@@ -40,6 +44,7 @@ public class Credentials {
 
     /**
      * Sets the password
+     *
      * @param password char[] to be set as the password
      */
     public void setPassword(char[] password) {

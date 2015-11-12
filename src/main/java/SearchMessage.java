@@ -10,6 +10,7 @@ public class SearchMessage extends SearchTerm {
 
     /**
      * Create a new SearchMessage object
+     *
      * @param searchTerm The string to search a message for
      */
     public SearchMessage(String searchTerm) {
@@ -18,6 +19,7 @@ public class SearchMessage extends SearchTerm {
 
     /**
      * Search a message for a given string
+     *
      * @param message Message to be searched
      * @return If a message contains the string being searched for
      */

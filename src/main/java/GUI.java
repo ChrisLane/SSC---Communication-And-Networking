@@ -215,7 +215,7 @@ public class GUI {
             try {
                 if (!(spamFolder == null))
                     folder.copyMessages(matchedMessages, spamFolder);
-                    folder.expunge();
+                folder.expunge();
             } catch (MessagingException e1) {
                 e1.printStackTrace();
             }
@@ -246,6 +246,7 @@ public class GUI {
 
     /**
      * Run the email client
+     *
      * @param args
      */
     public static void main(String[] args) {
@@ -255,4 +256,5 @@ public class GUI {
         frame.pack();
         frame.setVisible(true);
     }
+
 }

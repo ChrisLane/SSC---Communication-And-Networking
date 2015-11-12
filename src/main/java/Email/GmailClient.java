@@ -18,6 +18,7 @@ public class GmailClient {
 
     /**
      * Create a new GmailClient object with a given login
+     *
      * @param login Credentials to be used to sign in to the GMail account
      */
     public GmailClient(Credentials login) {
@@ -56,6 +57,7 @@ public class GmailClient {
 
     /**
      * Returns the messages from a given mail folder
+     *
      * @param folder Folder to retrieve the messages from
      * @return All messages contained in the given folder
      */
@@ -75,6 +77,7 @@ public class GmailClient {
 
     /**
      * Returns all folders of the account
+     *
      * @return All folders of the account
      */
     public Folder[] getFolders() {
@@ -89,10 +92,11 @@ public class GmailClient {
 
     /**
      * Send an email
-     * @param to Email address to send to
-     * @param cc Email address to send carbon copy to
-     * @param subject Subject of email
-     * @param message Content of email
+     *
+     * @param to         Email address to send to
+     * @param cc         Email address to send carbon copy to
+     * @param subject    Subject of email
+     * @param message    Content of email
      * @param attachment File attachment for email
      */
     public void sendMessage(String to, String cc, String subject, String message, File attachment) {
