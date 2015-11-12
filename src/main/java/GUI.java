@@ -1,6 +1,7 @@
 import Display.ClientView;
 import Email.Credentials;
 import Email.GmailClient;
+import Email.SearchMessage;
 
 import javax.mail.Flags;
 import javax.mail.Folder;

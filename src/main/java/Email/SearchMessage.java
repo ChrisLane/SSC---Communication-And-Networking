@@ -1,3 +1,5 @@
+package Email;
+
 import javax.mail.Header;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -9,7 +11,7 @@ public class SearchMessage extends SearchTerm {
     private String searchTerm;
 
     /**
-     * Create a new SearchMessage object
+     * Create a new Email.SearchMessage object
      *
      * @param searchTerm The string to search a message for
      */
