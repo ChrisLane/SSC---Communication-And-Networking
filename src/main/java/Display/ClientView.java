@@ -4,6 +4,9 @@ import javax.mail.*;
 import javax.swing.*;
 import java.io.IOException;
 
+/**
+ * Contains methods for printing the information to be viewed in the GUI
+ */
 public class ClientView {
     private DefaultListModel<String> messageModel;
 

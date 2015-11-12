@@ -9,6 +9,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
+/**
+ * Contains all methods for retrieving and sending data between the program and the email provider
+ */
 public class GmailClient {
     private Store store = null;
     private Session session;

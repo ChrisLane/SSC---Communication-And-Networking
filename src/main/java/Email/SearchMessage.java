@@ -7,6 +7,9 @@ import javax.mail.search.SearchTerm;
 import java.io.IOException;
 import java.util.Enumeration;
 
+/**
+ * Allows for a message to be searched for the set string
+ */
 public class SearchMessage extends SearchTerm {
     private String searchTerm;
 

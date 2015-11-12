@@ -1,5 +1,8 @@
 package Email;
 
+/**
+ * Contains methods for storing and retrieving login details
+ */
 public class Credentials {
     private String username;
     private char[] password;

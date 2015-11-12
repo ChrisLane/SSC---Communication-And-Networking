@@ -12,6 +12,9 @@ import javax.swing.*;
 import java.io.File;
 import java.util.ArrayList;
 
+/**
+ * Contains the main method to run the email client, GUI code and event handling
+ */
 public class GUI {
     private GmailClient gmail;
     private ClientView view;
