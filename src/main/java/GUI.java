@@ -247,7 +247,7 @@ public class GUI {
     /**
      * Run the email client
      *
-     * @param args
+     * @param args Runtime arguments
      */
     public static void main(String[] args) {
         JFrame frame = new JFrame("GUI");
