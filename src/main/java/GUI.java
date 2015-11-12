@@ -210,7 +210,6 @@ public class GUI {
                 } catch (MessagingException e1) {
                     e1.printStackTrace();
                 }
-
             }
 
             try {
@@ -257,5 +256,4 @@ public class GUI {
         frame.pack();
         frame.setVisible(true);
     }
-
 }
