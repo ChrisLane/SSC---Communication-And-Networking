@@ -47,11 +47,14 @@ public class GUI {
          * When the login button is pressed, the username and password inputs will be taken to log into the account.
          */
         loginButton.addActionListener(e -> {
+            // Take username and password input
             String username = usernameTextField.getText();
             char[] password = passwordPasswordField.getPassword();
+            // Set credentials using username and password provided
             Credentials credentials = new Credentials();
             credentials.setCredentials(username, password);
 
+            // Connect to GMail
             gmail = new GmailClient(credentials);
             view = new ClientView();
         });
@@ -94,15 +97,23 @@ public class GUI {
          * When a subject is clicked, the messages section will be replaced with the message belonging to said subject.
          */
         messageJList.addListSelectionListener(e -> {
+            // Only runs if the JList isn't already displaying a message
             if (!e.getValueIsAdjusting() && !messageJList.getModel().equals(view.getMessageModel())) {
                 Message[] messages = gmail.getMail(folder);
+
+                // Check all messages for matching subjects to value from clicked and open a matching message
                 for (Message message : messages) {
                     try {
+                        // Remove possible flags that were added to the subject string
                         String selectedSubject = messageJList.getSelectedValue()
-                                .replaceAll(" - READ", "");
+                                .replaceAll(" -", "")
+                                .replaceAll(" READ", "")
+                                .replaceAll(", ANSWERED", "")
+                                .replaceAll(", RECENT", "");
+
                         String messageSubject = message.getSubject();
                         if (selectedSubject.equals(messageSubject)) {
-
+                            // The subjects match! Print the message and flag as seen
                             view.printMessage(message, messageJList);
                             message.setFlag(Flags.Flag.SEEN, true);
                             break;
@@ -123,8 +134,10 @@ public class GUI {
             String subject = emailSubject.getText();
             String message = emailBody.getText();
 
+            // Send the email constructed from the inputs
             gmail.sendMessage(to, cc, subject, message, attachment);
 
+            // Set all text boxes to blank
             emailTo.setText("");
             emailCC.setText("");
             emailSubject.setText("");
@@ -137,9 +150,11 @@ public class GUI {
          * to be attached to an email.
          */
         attachFileButton.addActionListener(e -> {
+            // Open a new file selection window
             JFileChooser fileSelect = new JFileChooser();
             fileSelect.showOpenDialog(splitPane);
 
+            // Set the email attachment to the selected file
             attachment = fileSelect.getSelectedFile();
         });
 
@@ -154,6 +169,7 @@ public class GUI {
             SearchTerm search = new SearchMessage(searchTerm);
 
             ArrayList<Message> matchStore = new ArrayList<>();
+            // Check all messages for matching the search criteria
             for (Message message : messages) {
                 try {
                     if (message.match(search)) {
@@ -163,9 +179,11 @@ public class GUI {
                     e1.printStackTrace();
                 }
             }
+            // Create a message array from the arraylist to pass to the next method
             Message[] matchedMessages = new Message[matchStore.size()];
             matchStore.toArray(matchedMessages);
 
+            // Print subjects of messages matching the search criteria
             view.printSubjects(matchedMessages, messageJList);
         });
 
@@ -180,10 +198,12 @@ public class GUI {
             SearchTerm search = new SearchMessage(searchTerm);
 
             ArrayList<Message> matchStore = new ArrayList<>();
+            // Check all messages for matching the search criteria
             for (Message message : messages) {
                 try {
                     if (message.match(search)) {
                         matchStore.add(message);
+                        // Mark the email for deletion from the current folder
                         message.setFlag(Flags.Flag.DELETED, true);
                     }
                 } catch (MessagingException e1) {
@@ -194,6 +214,7 @@ public class GUI {
             matchStore.toArray(matchedMessages);
 
             Folder spamFolder = null;
+            // Find the spam folder
             for (Folder folder : gmail.getFolders()) {
                 try {
                     if (folder.list().length < 1) {
@@ -212,10 +233,12 @@ public class GUI {
                 }
             }
 
+            // If the spam folder was found then copy the messages to it and delete messages from the old folder
             try {
-                if (!(spamFolder == null))
+                if (!(spamFolder == null)) {
                     folder.copyMessages(matchedMessages, spamFolder);
-                folder.expunge();
+                    folder.expunge();
+                }
             } catch (MessagingException e1) {
                 e1.printStackTrace();
             }
@@ -232,6 +255,7 @@ public class GUI {
             SearchTerm search = new SearchMessage(searchTerm);
 
             Flags flag = new Flags(flagTextField.getText());
+            // Find all messages matching the search criteria and apply a given flag to them
             for (Message message : messages) {
                 try {
                     if (message.match(search)) {

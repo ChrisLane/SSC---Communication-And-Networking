@@ -19,9 +19,11 @@ public class ClientView {
         try {
             for (Message message : messages) {
                 String subject = message.getSubject();
-                String subjectWithFlags = subject + " - ";
+
+                // Add standard flags to the end of the subject if applicable
+                String subjectWithFlags = subject + " -";
                 if (message.isSet(Flags.Flag.SEEN)) {
-                    subjectWithFlags += "READ";
+                    subjectWithFlags += " READ";
                 }
                 if (message.isSet(Flags.Flag.ANSWERED)) {
                     subjectWithFlags += ", ANSWERED";
@@ -30,11 +32,13 @@ public class ClientView {
                     subjectWithFlags += ", RECENT";
                 }
 
+                // Add user flags to the end of the subject
                 String[] userFlags = message.getFlags().getUserFlags();
                 for (String flag : userFlags) {
                     subjectWithFlags += ", " + flag;
                 }
 
+                // Add string of subject and flags to the model
                 subjectModel.addElement(subjectWithFlags);
                 jList.setModel(subjectModel);
             }
@@ -42,6 +46,7 @@ public class ClientView {
             e.printStackTrace();
         }
 
+        // Set completed model to the list
         jList.setModel(subjectModel);
     }
 
@@ -62,10 +67,14 @@ public class ClientView {
      */
     public void printMessage(Message message, JList<String> jList) {
         messageModel = new DefaultListModel<>();
+
         try {
+            // Print standard text/plain email
             if (message.getContentType().contains("TEXT/PLAIN")) {
                 messageModel.addElement(message.getContent().toString());
-            } else {
+            }
+            // Deconstruct multipart message and print the body
+            else {
                 Multipart multipart = (Multipart) message.getContent();
                 for (int i = 0; i < multipart.getCount(); i++) {
                     BodyPart bodyPart = multipart.getBodyPart(i);
@@ -80,6 +89,7 @@ public class ClientView {
             e.printStackTrace();
         }
 
+        // Set completed model of the printed message to the list
         jList.setModel(messageModel);
     }
 }

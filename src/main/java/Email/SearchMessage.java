@@ -29,17 +29,20 @@ public class SearchMessage extends SearchTerm {
     public boolean match(Message message) {
         try {
             Enumeration headers = message.getAllHeaders();
+
+            // Loop through all headers
             while (headers.hasMoreElements()) {
                 Header header = (Header) headers.nextElement();
                 if (header.getValue().contains(searchTerm)) {
                     return true;
                 }
             }
+
             if (message.getContent().toString().contains(searchTerm)) {
                 return true;
             }
-        } catch (MessagingException | IOException e1) {
-            e1.printStackTrace();
+        } catch (MessagingException | IOException e) {
+            e.printStackTrace();
         }
         return false;
     }

@@ -36,6 +36,7 @@ public class GmailClient {
         props.setProperty("mail.password", password);
         session = Session.getInstance(props);
 
+        // Connect to the IMAP store
         try {
             store = session.getStore("imap");
         } catch (NoSuchProviderException e) {
@@ -43,6 +44,7 @@ public class GmailClient {
             e.printStackTrace();
         }
 
+        // Login
         try {
             if (!username.isEmpty()) {
                 store.connect(imapHost, username, password);
@@ -63,7 +65,7 @@ public class GmailClient {
      */
     public Message[] getMail(Folder folder) {
         Message[] messages = null;
-        // Step 4: Open the folder
+
         try {
             if (!folder.isOpen())
                 folder.open(Folder.READ_WRITE);
@@ -82,6 +84,7 @@ public class GmailClient {
      */
     public Folder[] getFolders() {
         Folder[] folders = null;
+
         try {
             folders = store.getDefaultFolder().list();
         } catch (MessagingException e) {
@@ -101,17 +104,21 @@ public class GmailClient {
      */
     public void sendMessage(String to, String cc, String subject, String message, File attachment) {
         MimeMessage mimeMessage = new MimeMessage(session);
+
         try {
+            // Set headers
             mimeMessage.setFrom(new InternetAddress(username));
             mimeMessage.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
             mimeMessage.setRecipients(Message.RecipientType.CC, InternetAddress.parse(cc));
             mimeMessage.setSubject(subject);
 
+            // Set main content
             MimeBodyPart messageBodyPart = new MimeBodyPart();
             messageBodyPart.setContent(message, "text/plain");
             Multipart multipart = new MimeMultipart();
             multipart.addBodyPart(messageBodyPart);
 
+            // Add file attachment
             if (!(attachment == null)) {
                 MimeBodyPart attachmentPart = new MimeBodyPart();
                 attachmentPart.attachFile(attachment);
@@ -121,7 +128,7 @@ public class GmailClient {
             mimeMessage.setContent(multipart);
             mimeMessage.saveChanges();
 
-            // Step 4: Send the message by javax.mail.Transport .
+            // Send the message by javax.mail.Transport .
             Transport tr = session.getTransport("smtp");    // Get Transport object from session
             tr.connect(smtpHost, username, password); // We need to connect
             tr.sendMessage(mimeMessage, mimeMessage.getAllRecipients()); // Send message
