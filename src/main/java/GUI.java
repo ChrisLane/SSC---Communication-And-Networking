@@ -47,6 +47,7 @@ public class GUI {
     private JTextField criteriaTextField;
     private JButton applyFlagButton;
     private JTextField flagTextField;
+    private JButton markAsUnreadButton;
 
     private GUI() {
         /**
@@ -266,6 +267,24 @@ public class GUI {
                 try {
                     if (message.match(search)) {
                         message.setFlags(flag, true);
+                    }
+                } catch (MessagingException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+
+        markAsUnreadButton.addActionListener(e -> {
+            Message[] messages = gmail.getMail(folder);
+            String searchTerm = criteriaTextField.getText();
+
+            SearchTerm search = new SearchMessage(searchTerm);
+
+            // Find all messages matching the search criteria and apply a given flag to them
+            for (Message message : messages) {
+                try {
+                    if (message.match(search)) {
+                        message.setFlag(Flags.Flag.SEEN, false);
                     }
                 } catch (MessagingException e1) {
                     e1.printStackTrace();
