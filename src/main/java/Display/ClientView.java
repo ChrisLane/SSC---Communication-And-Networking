@@ -8,7 +8,16 @@ import java.io.IOException;
  * Contains methods for printing the information to be viewed in the GUI
  */
 public class ClientView {
-    private DefaultListModel<String> messageModel;
+    private DefaultListModel<String> subjectModel;
+
+    /**
+     * Returns the model for the subject JList
+     *
+     * @return The model for the subject JList
+     */
+    public DefaultListModel getSubjectModel() {
+        return subjectModel;
+    }
 
     /**
      * Print subjects of messages to a given JList
@@ -17,7 +26,7 @@ public class ClientView {
      * @param jList    JList to print subjects to
      */
     public void printSubjects(Message[] messages, JList<String> jList) {
-        DefaultListModel<String> subjectModel = new DefaultListModel<>();
+        subjectModel = new DefaultListModel<>();
 
         try {
             for (Message message : messages) {
@@ -54,22 +63,13 @@ public class ClientView {
     }
 
     /**
-     * Return the list model being used for the messages JList
-     *
-     * @return The list model applied to the messages JList
-     */
-    public DefaultListModel<String> getMessageModel() {
-        return messageModel;
-    }
-
-    /**
      * Print a message to a given JList
      *
      * @param message Message to be printed to the JList
      * @param jList   JList to print the message to
      */
     public void printMessage(Message message, JList<String> jList) {
-        messageModel = new DefaultListModel<>();
+        DefaultListModel<String> messageModel = new DefaultListModel<>();
 
         try {
             // Print standard text/plain email
