@@ -280,6 +280,19 @@ public class GUI {
      * @param args Runtime arguments
      */
     public static void main(String[] args) {
+        // Fixes tiny window on  High DPI screens
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
+
         JFrame frame = new JFrame("GUI");
         frame.setContentPane(new GUI().splitPane);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
