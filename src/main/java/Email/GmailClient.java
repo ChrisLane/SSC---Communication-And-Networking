@@ -70,8 +70,9 @@ public class GmailClient {
         Message[] messages = null;
 
         try {
-            if (!folder.isOpen())
+            if (!folder.isOpen()) {
                 folder.open(Folder.READ_WRITE);
+            }
 
             messages = folder.getMessages();
         } catch (MessagingException e) {
