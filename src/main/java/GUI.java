@@ -104,7 +104,7 @@ public class GUI {
          */
         messageJList.addListSelectionListener(e -> {
             // Only runs if the JList isn't already displaying a message
-            if (!e.getValueIsAdjusting() && messageJList.getModel().equals(view.getSubjectModel())) {
+            if (e.getValueIsAdjusting() && messageJList.getModel().equals(view.getSubjectModel())) {
                 Message[] messages = gmail.getMail(folder);
 
                 // Check all messages for matching subjects to value from clicked and open a matching message
